@@ -97,8 +97,8 @@ export default {
     },
     setup() {
         const socket = inject("socket");
-        socket.on("ping", () => {
-            console.log("pong!");
+        socket.on("message:console", (message) => {
+            console.log(message);
         });
 
         let ping = () => {

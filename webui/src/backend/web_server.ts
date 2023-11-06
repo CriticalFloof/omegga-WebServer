@@ -6,6 +6,7 @@ import { EventEmitter } from "stream";
 import path from "path";
 import { OmeggaLike } from "omegga/dist/plugin";
 import SocketIo from "socket.io";
+import WebOpenAPI from "./api/open";
 
 export default class OmeggaWebServer extends EventEmitter {
     public port: number;
@@ -39,11 +40,7 @@ export default class OmeggaWebServer extends EventEmitter {
         this.io = new SocketIo.Server(this.server);
         this.io.sockets.on("connection", (socket) => {
             console.log(`Connection Established with id: ${socket.id}`);
-
-            socket.on("ping", () => {
-                console.log(`pinged by socket ${socket.id}, returning...`);
-                socket.emit("ping");
-            });
+            WebOpenAPI.inject(socket);
         });
 
         //Open the server

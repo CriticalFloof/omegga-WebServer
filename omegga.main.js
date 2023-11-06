@@ -22,7 +22,6 @@ module.exports = class Plugin {
         const sourceFileName = path.join(pluginPath, "webui", MAIN_FILE_TS);
         // First thing to do is compile the plugin's typescript
 
-        
         const stats = await new Promise((resolve, reject) => {
             webpack(
                 Object.freeze({
@@ -48,7 +47,7 @@ module.exports = class Plugin {
                         },
                     ],
                     resolve: {
-                        extensions: [".ts", ".js", ".json", ".node"]
+                        extensions: [".ts", ".js", ".json", ".node"],
                     },
                     cache: {
                         type: "filesystem",
@@ -110,7 +109,6 @@ module.exports = class Plugin {
                 console.error(stats.compilation.errors[i]);
             }
         }
-        
 
         const pluginClass = require("./.build/plugin").default;
         this.pluginInstance = new pluginClass(this.omegga, this.config, this.store);
