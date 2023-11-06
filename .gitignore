@@ -1,0 +1,7 @@
+.build/
+node_modules/
+disabled.omegga
+package-lock.json
+*/omegga.d.ts
+webui/src/frontend/dist
+designdoc
