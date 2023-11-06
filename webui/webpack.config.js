@@ -22,6 +22,28 @@ module.exports = {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 loader: "file-loader",
             },
+            {
+                test: /\.[jt]s$/,
+                use: {
+                    loader: "swc-loader",
+                    options: {
+                        sourceMaps: true,
+                        isModule: true,
+                        jsc: {
+                            target: "es2020",
+                            parser: {
+                                syntax: "typescript",
+                            },
+                            transform: {},
+                        },
+
+                        module: {
+                            type: "commonjs",
+                            strictMode: false,
+                        },
+                    },
+                },
+            },
         ],
     },
     plugins: [new VueLoaderPlugin()],

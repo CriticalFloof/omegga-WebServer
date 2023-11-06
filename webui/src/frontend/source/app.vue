@@ -6,6 +6,7 @@
 import { ref, onMounted, provide } from "vue";
 import main from "@pages/main.vue";
 import io from "socket.io-client";
+import ClientAPI from "./client_api.ts";
 
 export default {
     components: {
@@ -19,10 +20,9 @@ export default {
             let socket = socketIo.value;
 
             socket.on("connect", () => {
+                ClientAPI.inject(socket);
                 console.log("Client Connected with server");
             });
-
-            console.log(socket);
 
             provide("socket", socket);
         });

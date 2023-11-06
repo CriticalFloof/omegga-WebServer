@@ -97,13 +97,8 @@ export default {
     },
     setup() {
         const socket = inject("socket");
-        socket.on("message:console", (message) => {
-            console.log(message);
-        });
 
         let ping = () => {
-            console.log(socket);
-
             socket.emit("ping");
         };
 
