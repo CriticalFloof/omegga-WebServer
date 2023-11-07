@@ -1,9 +1,10 @@
 <style scoped lang="scss">
-@import "@css/theme";
+@import "@css/style";
 
 .main-content {
     display: flex;
     flex-direction: row;
+    height: 100%;
 }
 .generic-container {
     margin-left: 8px;
@@ -25,6 +26,55 @@
         width: 100%;
     }
 }
+
+.plugins-list {
+    @include column-container;
+    margin-top: 8px;
+
+    .plugin-item {
+        background-color: $br-button-normal;
+        margin-bottom: 8px;
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+        height: 48px;
+        font-size: 20px;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+
+        &:hover,
+        .router-link-active {
+            background-color: $br-element-hover;
+        }
+        &:active,
+        &.disabled {
+            background-color: $br-element-pressed;
+        }
+
+        .icon {
+            @include center;
+            height: 32px;
+            width: 32px;
+            margin-left: 8px;
+            margin-right: 8px;
+
+            &.running {
+                background-color: $br-main-normal;
+            }
+            &.bugged {
+                background-color: $br-warn-normal;
+            }
+            &.broken {
+                background-color: $br-error-normal;
+            }
+            &.disabled {
+                background-color: $br-bg-primary;
+            }
+        }
+    }
+}
 </style>
 
 <template>
@@ -35,34 +85,31 @@
         <div class="generic-container">
             <div class="plugin-list-container">
                 <section-header>
-                    <omegga-input placeholder="Search Plugins..." />
+                    <omegga-input placeholder="Search Plugins..." v-model="search" />
                     <span style="flex: 1" />
-                    <omegga-button icon normal data-tooltip="Refresh plugin list" @click="ping">
+                    <omegga-button icon normal data-tooltip="Refresh plugin list" @click="getPlugins()">
                         <IconRotate />
                     </omegga-button>
                 </section-header>
                 <div class="plugins-list">
                     <scroll-container>
                         <div v-for="plugin in plugins">
-                            <div
-                                is="router-link"
-                                v-if="matches(plugin)"
+                            <router-link
+                                v-if="matchesSearch(plugin)"
                                 :to="'/plugins/' + plugin.path"
                                 :key="plugin.path"
                                 :data-tooltip="plugin.documentation && plugin.documentation.description"
                                 class="plugin-item"
                             >
-                                <component :is="plugin.icon" :class="[plugin.status]" :data-tooltip="plugin.tooltip" />
+                                <component :is="plugin.icon" :class="[plugin.status, 'icon']" :data-tooltip="plugin.tooltip" />
                                 {{ plugin.name }}
-                            </div>
+                            </router-link>
                         </div>
                     </scroll-container>
-                    <loading :active="loading" size="huge">Loading Plugins</loading>
+                    <loading :active="!loaded" size="huge">Loading Plugins</loading>
                 </div>
             </div>
-            <div class="plugin-inspector-container">
-                <p>test</p>
-            </div>
+            <inspector />
         </div>
     </div>
 
@@ -70,7 +117,7 @@
 </template>
 
 <script>
-import { inject } from "vue";
+import { inject, ref } from "vue";
 
 import siteNavigation from "@components/user_interface/navigation/site_navigation.vue";
 import pageHeader from "@components/user_interface/general/page_header.vue";
@@ -80,14 +127,20 @@ import input from "@components/user_interface/interaction/input.vue";
 import button from "@components/user_interface/interaction/button.vue";
 import scrollContainer from "@components/user_interface/general/scroll.vue";
 import loading from "@components/user_interface/general/loader.vue";
+import inspector from "@components/plugins/inspector.vue";
 
-import { IconRotate } from "@tabler/icons-vue";
+import { IconRotate, IconPower, IconAlertCircle, IconBug, IconCircleCheck } from "@tabler/icons-vue";
 
 export default {
     components: {
+        IconPower,
+        IconAlertCircle,
+        IconBug,
+        IconCircleCheck,
         IconRotate,
-        "scroll-container": scrollContainer,
+        inspector: inspector,
         loading: loading,
+        "scroll-container": scrollContainer,
         "omegga-button": button,
         "omegga-input": input,
         "site-navigation": siteNavigation,
@@ -97,13 +150,43 @@ export default {
     },
     setup() {
         const socket = inject("socket");
+        let search = ref("");
+        let loaded = ref(false);
+        let plugins = ref([]);
 
-        let ping = () => {
-            socket.emit("ping");
+        const getPlugins = () => {
+            loaded.value = false;
+            socket.once("pluginslist:get", (pluginList) => {
+                plugins.value = pluginList;
+
+                for (const plugin in pluginList) {
+                    updatePluginIcon(pluginList[plugin]);
+                }
+
+                loaded.value = true;
+            });
+            socket.emit("pluginslist:get");
+        };
+
+        const matchesSearch = (p) => {
+            return p.name.includes(search.value);
+        };
+
+        const updatePluginIcon = (p) => {
+            p.state = (p.isLoaded ? 2 : 0) + (p.isEnabled ? 1 : 0);
+            p.status = ["disabled", "broken", "bugged", "running"][p.state];
+            p.tooltip = ["Plugin is disabled", "Plugin is enabled but not running", "Plugin is running but not enabled", "Plugin is running"][
+                p.state
+            ];
+            p.icon = ["IconPower", "IconAlertCircle", "IconBug", "IconCircleCheck"][p.state];
         };
 
         return {
-            ping,
+            getPlugins,
+            matchesSearch,
+            plugins,
+            loaded,
+            search,
         };
     },
 };
