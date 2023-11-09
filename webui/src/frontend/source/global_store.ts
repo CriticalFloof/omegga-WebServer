@@ -19,4 +19,12 @@ export default class GlobalStore extends EventEmitter {
     public onKeyValueChanged(key: string, listener: (...args: any[]) => void) {
         this.on(`key_value_changed:${key}`, listener);
     }
+
+    public onceKeyValueChanged(key: string, listener: (...args: any[]) => void) {
+        this.once(`key_value_changed:${key}`, listener);
+    }
+
+    public offKeyValueChanged(key: string, listener: (...args: any[]) => void) {
+        this.off(`key_value_changed:${key}`, listener);
+    }
 }
