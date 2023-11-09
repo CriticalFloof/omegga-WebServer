@@ -24,12 +24,14 @@
 .stat {
     color: white;
     font-weight: bold;
+    b {
+        color: $br-boring-button-fg;
+    }
 }
 
 .stats {
     padding: 8px;
     font-size: 24px;
-    word-break: break-all;
     background-color: $br-element-popout-bg;
 }
 
@@ -57,101 +59,40 @@
         text-transform: uppercase;
     }
 }
-
-.option-item {
-    @include alternate(background-color, $br-bg-secondary, $br-bg-secondary-alt);
-    font-size: 20px;
-    color: $br-boring-button-fg;
-    min-height: 50px;
-    overflow: visible;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-
-    &.config {
-        min-height: 80px;
-    }
-
-    .option-name,
-    .option-input {
-        margin-left: 8px;
-        margin-right: 8px;
-    }
-
-    .option-name {
-        font-size: 24px;
-        font-weight: bold;
-        cursor: default;
-    }
-
-    .option-input {
-        @include column;
-        width: 100%;
-
-        .option-label {
-            font-weight: bold;
-            margin-bottom: 4px;
-
-            .saved-note {
-                color: $br-info-normal;
-                display: inline-flex;
-                align-items: center;
-                font-weight: normal;
-                font-size: 12px;
-                opacity: 0;
-                transition: 0.2s ease;
-
-                &.show {
-                    opacity: 1;
-                }
-            }
-        }
-
-        .option-value {
-            @include row;
-            justify-content: space-between;
-
-            .reset-button {
-                color: white;
-                cursor: pointer;
-            }
-        }
-    }
-
-    .option-args {
-        display: flex;
-        flex-flow: row wrap;
-
-        .option-arg {
-            @include center;
-            background-color: $br-button-normal;
-            height: 16px;
-            margin: 4px;
-            font-size: 16px;
-            padding: 4px 8px;
-            border-radius: 16px;
-            cursor: default;
-            color: white;
-
-            &.required {
-                background-color: $br-main-pressed;
-            }
-        }
-    }
-}
 </style>
 
 <template>
     <div class="plugin-inspector-container">
         <section-header>
-            <span>{{ "Placeholder" }}</span>
+            <span>{{ inspectorTitle }}</span>
         </section-header>
         <div class="plugin-inspector">
             <div class="plugin-view">
                 <loading :active="!loaded" size="huge">Loading Plugin</loading>
-                <div class="plugin-info" v-if="loaded">
+                <div class="plugin-info" v-if="loaded && currentPlugin">
                     <div class="stats">
-                        <div class="stat"><b data-tooltip="Plugin name">Name:</b> Placeholder</div>
+                        <div class="stat" v-if="currentPlugin.name != null"><b data-tooltip="Plugin name">Name:</b> {{ currentPlugin.name }}</div>
+                        <div class="stat" v-if="currentPlugin.documentation?.author != null">
+                            <b data-tooltip="Plugin creator">Author:</b> {{ currentPlugin.documentation?.author }}
+                        </div>
+                        <div class="stat" v-if="currentPlugin.documentation?.description != null">
+                            <b>Description:</b> {{ currentPlugin.documentation?.description }}
+                        </div>
+                        <div class="stat" v-if="currentPlugin.path != null">
+                            <b data-tooltip="The folder this plugin runs in">Folder:</b> {{ currentPlugin.path }}
+                        </div>
+                        <div class="stat" v-if="currentPlugin.format != null">
+                            <b data-tooltip="The type of plugin this is">Format:</b> {{ currentPlugin.format }}
+                        </div>
+                        <div class="stat" v-if="currentPlugin.objCount != null">
+                            <b data-tooltip="Number of objects in the plugin's storage">Stored Objects:</b> {{ currentPlugin.objCount }}
+                        </div>
+                        <div class="stat" v-if="currentPlugin.isEnabled != null">
+                            <b data-tooltip="Plugin can be started">Enabled:</b> {{ currentPlugin.isEnabled }}
+                        </div>
+                        <div class="stat" v-if="currentPlugin.isLoaded != null">
+                            <b data-tooltip="Plugin is running">Loaded:</b> {{ currentPlugin.isLoaded }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,7 +105,7 @@ import loading from "@components/user_interface/general/loader.vue";
 
 import { IconCheck, IconArrowBackUp, IconMinus, IconPlus, IconRefresh, IconPlayerStop, IconPlayerPlay } from "@tabler/icons-vue";
 import { inject, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onBeforeRouteUpdate, useRoute } from "vue-router";
 
 export default {
     components: {
@@ -180,23 +121,27 @@ export default {
     },
     setup() {
         const socket = inject("socket");
-        let plugin = ref(null);
-        let loaded = ref(false);
+        let inspectorTitle = ref("");
+        let currentPlugin = ref(null);
+        let loaded = ref(true);
 
-        console.log(useRoute());
-        //getPlugin
+        const updatePluginInspectorTitle = () => {
+            const name = currentPlugin.value ? currentPlugin.value.name : "Select a plugin".toUpperCase();
+            inspectorTitle.value = name;
+        };
 
-        const getPlugin = (name) => {
+        const getPlugin = (path) => {
             loaded.value = false;
 
             socket.once("plugin:get", (plugin) => {
-                plugin.value = plugin;
+                currentPlugin.value = plugin;
+                console.log(currentPlugin.value);
+                updatePluginInspectorTitle();
 
                 loaded.value = true;
-                console.log(plugin.value);
             });
 
-            socket.emit("plugin:get", name);
+            socket.emit("plugin:get", path, "path");
         };
 
         //saveConfig
@@ -206,9 +151,16 @@ export default {
         //reloadPlugin
         //togglePlugin
 
+        onBeforeRouteUpdate((to) => {
+            getPlugin(to.params.id);
+        });
+
+        getPlugin(useRoute().params.id);
+
         return {
-            plugin,
+            currentPlugin,
             loaded,
+            inspectorTitle,
             getPlugin,
         };
     },
