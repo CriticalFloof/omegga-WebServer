@@ -46,6 +46,10 @@
             <span>Server</span>
         </menu-button>
         <menu-button :disabled="false" route="">
+            <IconAlarmPlus style="background: #f1bd3a" class="icon" />
+            <span>Tasks</span>
+        </menu-button>
+        <menu-button :disabled="false" route="">
             <IconUsers style="background: #7f0b8a" class="icon" />
             <span>Users</span>
         </menu-button>
@@ -65,6 +69,7 @@ import {
     IconDeviceFloppy,
     IconAdjustmentsAlt,
     IconServer,
+    IconAlarmPlus,
 } from "@tabler/icons-vue";
 
 /**
@@ -82,6 +87,7 @@ export default {
         IconDeviceFloppy,
         IconAdjustmentsAlt,
         IconServer,
+        IconAlarmPlus,
     },
 };
 </script>
