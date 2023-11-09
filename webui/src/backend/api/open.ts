@@ -1,5 +1,6 @@
 import SocketIo from "socket.io";
 import Runtime from "../../main";
+import { Plugin } from "omegga/dist/omegga/plugin";
 
 export default class WebOpenAPI {
     public static inject(socket: SocketIo.Socket) {
@@ -34,10 +35,10 @@ export default class WebOpenAPI {
         socket.emit("pluginslist:get", plugins);
     }
 
-    private static getPlugin(socket: SocketIo.Socket, searchItem: string, searchMethod: "name" | "path" = "name") {
+    private static async getPlugin(socket: SocketIo.Socket, searchItem: string, searchMethod: "name" | "path" = "name") {
         console.log(`Getting Plugin '${searchItem}' using the '${searchMethod}' search method...`);
 
-        let pluginResult;
+        let pluginResult: Plugin | undefined;
 
         switch (searchMethod) {
             case "name":
@@ -48,15 +49,28 @@ export default class WebOpenAPI {
                 break;
         }
 
-        let plugin = pluginResult
-            ? {
-                  name: pluginResult.getName(),
-                  documentation: pluginResult.getDocumentation(),
-                  path: pluginResult.shortPath,
-                  isLoaded: pluginResult.isLoaded(),
-                  isEnabled: pluginResult.isEnabled(),
-              }
-            : undefined;
+        let plugin;
+
+        if (pluginResult) {
+            const [defaultConfig, config, objCount] = await Promise.all([
+                pluginResult.storage.getDefaultConfig(),
+                pluginResult.storage.getConfig(),
+                pluginResult.storage.count(),
+            ]);
+
+            plugin = {
+                name: pluginResult.getName(),
+                format: (pluginResult.constructor as typeof Plugin).getFormat(),
+                info: pluginResult.getInfo(),
+                documentation: pluginResult.getDocumentation(),
+                config,
+                defaultConfig,
+                objCount,
+                path: pluginResult.shortPath,
+                isLoaded: pluginResult.isLoaded(),
+                isEnabled: pluginResult.isEnabled(),
+            };
+        }
 
         socket.emit("plugin:get", plugin);
     }
