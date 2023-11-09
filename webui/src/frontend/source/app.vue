@@ -14,27 +14,18 @@ export default {
         "main-page": main,
     },
     setup: () => {
-        let socketIo = ref(io("http://localhost:8081"));
+        console.log("Starting Connection to WebSocket Server.");
+        let socket = io("http://localhost:8081");
 
-        onMounted(() => {
-            console.log("Starting Connection to WebSocket Server.");
-            let socket = socketIo.value;
-
-            socket.on("connect", () => {
-                ClientAPI.inject(socket);
-                console.log("Client Connected with server");
-            });
-
-            let store = new GlobalStore();
-
-            provide("socket", socket);
-            provide("store", store);
+        socket.on("connect", () => {
+            ClientAPI.inject(socket);
+            console.log("Client Connected with server");
         });
 
-        return {
-            socketIo: socketIo,
-        };
+        let store = new GlobalStore();
+
+        provide("socket", socket);
+        provide("store", store);
     },
-    methods: {},
 };
 </script>
