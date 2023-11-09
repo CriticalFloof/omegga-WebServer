@@ -3,8 +3,11 @@
 
 .site-nav-container {
     width: 350px;
-    margin-top: -8px;
     margin-right: 8px;
+
+    :first-child {
+        margin-top: 0;
+    }
 }
 </style>
 

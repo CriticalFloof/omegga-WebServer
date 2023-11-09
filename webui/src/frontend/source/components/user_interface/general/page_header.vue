@@ -1,23 +1,42 @@
 <style lang="scss" scoped>
 @import "@css/theme";
-.nav-header {
+.page-header {
     color: white;
     font-weight: bold;
-    font-size: 50px;
-    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
 }
 
-.main-nav {
-    margin-bottom: 16px;
+.title {
+    font-size: 50px;
+    text-transform: uppercase;
+    margin: -6px 0;
+}
+
+.user-nav {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+
+    :first-child {
+        margin-left: 8px;
+    }
+    :last-child {
+        margin-right: 8px;
+    }
+}
+
+.user-info {
+    flex: 1;
 }
 </style>
 
 <template>
-    <div class="main-nav">
-        <header class="nav-header">{{ title }}</header>
-        <section-header>
-            <span style="flex: 1; margin-left: 8px"> Welcome, {{ username }} </span>
-            <slot />
+    <div class="page-header">
+        <header class="title">{{ title }}</header>
+        <section-header class="user-nav">
+            <span class="user-info"> Welcome, {{ username }} </span>
         </section-header>
     </div>
 </template>
