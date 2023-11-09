@@ -150,21 +150,25 @@ export default {
     },
     setup() {
         const socket = inject("socket");
+        const store = inject("store");
+
         let search = ref("");
         let loaded = ref(false);
         let plugins = ref([]);
 
         const getPlugins = () => {
             loaded.value = false;
-            socket.once("pluginslist:get", (pluginList) => {
-                plugins.value = pluginList;
 
-                for (const plugin in pluginList) {
-                    updatePluginIcon(pluginList[plugin]);
+            store.onceKeyValueChanged("pluginslist", () => {
+                plugins.value = store.get("pluginslist");
+
+                for (const plugin in plugins.value) {
+                    updatePluginIcon(plugins.value[plugin]);
                 }
 
                 loaded.value = true;
             });
+
             socket.emit("pluginslist:get");
         };
 
@@ -180,6 +184,8 @@ export default {
             ];
             p.icon = ["IconPower", "IconAlertCircle", "IconBug", "IconCircleCheck"][p.state];
         };
+
+        getPlugins();
 
         return {
             getPlugins,
