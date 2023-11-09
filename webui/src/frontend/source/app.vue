@@ -14,15 +14,16 @@ export default {
         "main-page": main,
     },
     setup: () => {
+        const store = new GlobalStore();
+        const clientApi = new ClientAPI(store);
+
         console.log("Starting Connection to WebSocket Server.");
-        let socket = io("http://localhost:8081");
+        const socket = io("http://localhost:8081");
 
         socket.on("connect", () => {
-            ClientAPI.inject(socket);
+            clientApi.inject(socket);
             console.log("Client Connected with server");
         });
-
-        let store = new GlobalStore();
 
         provide("socket", socket);
         provide("store", store);
