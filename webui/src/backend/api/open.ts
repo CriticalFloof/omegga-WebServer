@@ -30,10 +30,19 @@ export default class WebOpenAPI {
         socket.emit("pluginslist:get", plugins);
     }
 
-    private static getPlugin(socket: SocketIo.Socket, name: string) {
-        console.log(`Getting Plugin '${name}'...`);
+    private static getPlugin(socket: SocketIo.Socket, searchItem: string, searchMethod: "name" | "path" = "name") {
+        console.log(`Getting Plugin '${searchItem}' using the '${searchMethod}' search method...`);
 
-        const pluginResult = Runtime.omegga.pluginLoader.plugins.find((p) => p.getName() === name);
+        let pluginResult;
+
+        switch (searchMethod) {
+            case "name":
+                pluginResult = Runtime.omegga.pluginLoader.plugins.find((p) => p.getName() === searchItem);
+                break;
+            case "path":
+                pluginResult = Runtime.omegga.pluginLoader.plugins.find((p) => p.shortPath === searchItem);
+                break;
+        }
 
         let plugin = pluginResult
             ? {
