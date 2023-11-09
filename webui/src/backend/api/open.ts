@@ -3,10 +3,14 @@ import Runtime from "../../main";
 
 export default class WebOpenAPI {
     public static inject(socket: SocketIo.Socket) {
-        socket.on("ping", this.ping.bind(this, socket));
-        socket.on("pluginslist:get", this.getPluginsList.bind(this, socket));
-        socket.on("plugin:get", (name) => {
-            this.getPlugin.bind(this, socket, name);
+        socket.on("ping", () => {
+            this.ping(socket);
+        });
+        socket.on("pluginslist:get", () => {
+            this.getPluginsList(socket);
+        });
+        socket.on("plugin:get", (searchItem, searchMethod) => {
+            this.getPlugin(socket, searchItem, searchMethod);
         });
     }
 
