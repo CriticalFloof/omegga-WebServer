@@ -185,18 +185,18 @@
                 Disable
             </omegga-button>
             <span style="flex: 1" />
-            <omegga-button error data-tooltip="Uninstalls this plugin from the server" @click="loadPlugin()">
+            <omegga-button error data-tooltip="Uninstalls this plugin from the server" @click="toggleUninstallModal(true)">
                 <IconTrash />
                 Uninstall
             </omegga-button>
         </omegga-footer>
         <omegga-footer v-if="loaded && !currentPlugin">
-            <omegga-button main data-tooltip="Opens a menu where you can install new plugins onto the server" @click="loadPlugin()">
+            <omegga-button main data-tooltip="Opens a menu where you can install new plugins onto the server" @click="toggleInstallModal(true)">
                 <IconDownload />
                 Install Plugins
             </omegga-button>
             <span style="flex: 1" />
-            <omegga-button warn data-tooltip="Reload all plugins, this may clear current plugin progress" @click="loadPlugin()">
+            <omegga-button warn data-tooltip="Reload all plugins, this may clear current plugin progress" @click="console.log('not implemented')">
                 <IconRefreshAlert />
                 Reload Plugins
             </omegga-button>
@@ -209,6 +209,7 @@ import loading from "@components/user_interface/general/loader.vue";
 import scrollContainer from "@components/user_interface/general/scroll.vue";
 import button from "@components/user_interface/interaction/button.vue";
 import footer from "@components/user_interface/general/footer.vue";
+import modal from "@components/user_interface/general/modal.vue";
 
 import {
     IconCheck,
@@ -240,6 +241,7 @@ export default {
         loading: loading,
         "omegga-button": button,
         "omegga-footer": footer,
+        "omegga-modal": modal,
         "section-header": sectionHeader,
         "scroll-container": scrollContainer,
     },
@@ -277,6 +279,18 @@ export default {
             pluginsOverview.value = pluginsInfo;
         };
 
+        const toggleInstallModal = (newState) => {
+            const modals = store.get("modal");
+            modals.value.plugins.install = newState;
+            store.set("modal", modals);
+        };
+
+        const toggleUninstallModal = (newState) => {
+            const modals = store.get("modal");
+            modals.value.plugins.uninstall = newState;
+            store.set("modal", modals);
+        };
+
         const getPlugin = (path) => {
             loaded.value = false;
 
@@ -309,6 +323,8 @@ export default {
             loaded,
             pluginsOverview,
             inspectorTitle,
+            toggleInstallModal,
+            toggleUninstallModal,
             getPlugin,
         };
     },
