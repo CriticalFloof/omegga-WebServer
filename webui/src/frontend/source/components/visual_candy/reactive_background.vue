@@ -100,11 +100,6 @@ let backgroundNames = [
  *  Standard background, with some visual flair. Only one should be loaded to the DOM.
  */
 export default {
-    setup() {
-        return {
-            version: "0.0.0",
-        };
-    },
     mounted() {
         let currentBackground = backgroundNames[Math.floor(Math.random() * backgroundNames.length)];
         let incomingBackground = currentBackground;

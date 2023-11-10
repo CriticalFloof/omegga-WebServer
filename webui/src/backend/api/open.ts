@@ -1,6 +1,7 @@
 import SocketIo from "socket.io";
 import Runtime from "../../main";
 import { Plugin } from "omegga/dist/omegga/plugin";
+import omeggaPackage from "omegga/package.json";
 
 export default class WebOpenAPI {
     public static inject(socket: SocketIo.Socket) {
@@ -12,6 +13,9 @@ export default class WebOpenAPI {
         });
         socket.on("plugin:get", (searchItem, searchMethod) => {
             this.getPlugin(socket, searchItem, searchMethod);
+        });
+        socket.on("omegga:info", () => {
+            this.omeggaInfo(socket);
         });
     }
 
@@ -73,5 +77,13 @@ export default class WebOpenAPI {
         }
 
         socket.emit("plugin:get", plugin);
+    }
+
+    private static omeggaInfo(socket: SocketIo.Socket) {
+        const info = {
+            version: omeggaPackage.version,
+        };
+
+        socket.emit("omegga:info", info);
     }
 }

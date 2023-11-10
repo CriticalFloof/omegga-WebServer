@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { ref, onMounted, provide } from "vue";
+import { provide } from "vue";
 import main from "@pages/main.vue";
 import io from "socket.io-client";
 import ClientAPI from "./client_api.ts";
@@ -24,6 +24,11 @@ export default {
             clientApi.inject(socket);
             console.log("Client Connected with server");
         });
+
+        socket.once("omegga:info", (info) => {
+            store.set("omeggaInfo", info);
+        });
+        socket.emit("omegga:info");
 
         provide("socket", socket);
         provide("store", store);
