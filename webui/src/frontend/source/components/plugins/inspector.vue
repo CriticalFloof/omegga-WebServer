@@ -133,6 +133,74 @@
                 </div>
             </scroll-container>
         </div>
+        <omegga-footer v-if="loaded && currentPlugin">
+            <omegga-button
+                main
+                v-if="currentPlugin.isEnabled && !currentPlugin.isLoaded"
+                :disabled="waiting"
+                data-tooltip="Start the plugin"
+                @click="loadPlugin()"
+            >
+                <IconPlayerPlay />
+                Load
+            </omegga-button>
+            <omegga-button
+                warn
+                v-if="currentPlugin.isEnabled && currentPlugin.isLoaded"
+                data-tooltip="Stop, then start the plugin"
+                :disabled="waiting"
+                @click="reloadPlugin()"
+            >
+                <IconRefresh />
+                Reload
+            </omegga-button>
+            <omegga-button
+                error
+                v-if="currentPlugin.isEnabled && currentPlugin.isLoaded"
+                :disabled="waiting"
+                data-tooltip="Stop the plugin"
+                @click="unloadPlugin()"
+            >
+                <IconPlayerStop />
+                Unload
+            </omegga-button>
+            <omegga-button
+                main
+                v-if="!currentPlugin.isEnabled"
+                data-tooltip="Allow the plugin to be started"
+                :disabled="waiting"
+                @click="togglePlugin(true)"
+            >
+                <IconPlus />
+                Enable
+            </omegga-button>
+            <omegga-button
+                error
+                v-if="currentPlugin.isEnabled && !currentPlugin.isLoaded"
+                data-tooltip="Prevent the plugin from being started"
+                :disabled="waiting"
+                @click="togglePlugin(false)"
+            >
+                <IconMinus />
+                Disable
+            </omegga-button>
+            <span style="flex: 1" />
+            <omegga-button error data-tooltip="Uninstalls this plugin from the server" @click="loadPlugin()">
+                <IconTrash />
+                Uninstall
+            </omegga-button>
+        </omegga-footer>
+        <omegga-footer v-if="loaded && !currentPlugin">
+            <omegga-button main data-tooltip="Opens a menu where you can install new plugins onto the server" @click="loadPlugin()">
+                <IconDownload />
+                Install Plugins
+            </omegga-button>
+            <span style="flex: 1" />
+            <omegga-button warn data-tooltip="Reload all plugins, this may clear current plugin progress" @click="loadPlugin()">
+                <IconRefreshAlert />
+                Reload Plugins
+            </omegga-button>
+        </omegga-footer>
     </div>
 </template>
 <script>
@@ -140,8 +208,20 @@ import sectionHeader from "@components/user_interface/general/section_header.vue
 import loading from "@components/user_interface/general/loader.vue";
 import scrollContainer from "@components/user_interface/general/scroll.vue";
 import button from "@components/user_interface/interaction/button.vue";
+import footer from "@components/user_interface/general/footer.vue";
 
-import { IconCheck, IconArrowBackUp, IconMinus, IconPlus, IconRefresh, IconPlayerStop, IconPlayerPlay } from "@tabler/icons-vue";
+import {
+    IconCheck,
+    IconArrowBackUp,
+    IconMinus,
+    IconPlus,
+    IconRefresh,
+    IconPlayerStop,
+    IconPlayerPlay,
+    IconRefreshAlert,
+    IconDownload,
+    IconTrash,
+} from "@tabler/icons-vue";
 import { inject, ref } from "vue";
 import { onBeforeRouteUpdate, useRoute } from "vue-router";
 
@@ -154,8 +234,12 @@ export default {
         IconRefresh,
         IconPlayerStop,
         IconPlayerPlay,
+        IconRefreshAlert,
+        IconDownload,
+        IconTrash,
         loading: loading,
         "omegga-button": button,
+        "omegga-footer": footer,
         "section-header": sectionHeader,
         "scroll-container": scrollContainer,
     },
