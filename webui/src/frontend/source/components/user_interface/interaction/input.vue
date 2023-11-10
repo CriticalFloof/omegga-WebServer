@@ -69,8 +69,6 @@
         <input
             spellcheck="false"
             :value="value"
-            @blur="$emit('blur')"
-            @focus="$emit('focus')"
             @input="$emit('input', type === 'number' ? Number($event.target.value) : $event.target.value)"
             :placeholder="placeholder ? placeholder.toString() : ''"
             :type="type"
@@ -95,5 +93,6 @@ export default {
         type: String,
         value: [String, Number],
     },
+    emits: ["input"],
 };
 </script>

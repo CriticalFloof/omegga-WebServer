@@ -45,7 +45,7 @@
         text-decoration: none;
 
         &:hover,
-        .router-link-active {
+        &.router-link-active {
             background-color: $br-element-hover;
         }
         &:active,
@@ -85,7 +85,7 @@
         <div class="generic-container">
             <div class="plugin-list-container">
                 <section-header>
-                    <omegga-input placeholder="Search Plugins..." v-model="search" />
+                    <omegga-input placeholder="Search Plugins..." @input="(newValue) => (search = newValue)" />
                     <span style="flex: 1" />
                     <omegga-button icon normal data-tooltip="Refresh plugin list" @click="getPlugins()">
                         <IconRotate />
@@ -96,6 +96,7 @@
                         <div v-for="plugin in plugins">
                             <router-link
                                 v-if="matchesSearch(plugin)"
+                                :class="plugin.path === $route.params.id ? 'router-link-active' : ''"
                                 :to="'/plugins/' + plugin.path"
                                 :key="plugin.path"
                                 :data-tooltip="plugin.documentation && plugin.documentation.description"
