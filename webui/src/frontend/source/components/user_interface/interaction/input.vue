@@ -83,7 +83,7 @@
  *  @prop tooltip: String. Text which is displayed by the tooltip element.
  *  @prop disabled: Boolean. Disallows interaction.
  *  @prop type: String. Defines the type of input field this is.
- *  @prop value: String, Number. The data that's inside the input field.
+ *  @prop value: String or Number. The data that's inside the input field.
  */
 export default {
     props: {
