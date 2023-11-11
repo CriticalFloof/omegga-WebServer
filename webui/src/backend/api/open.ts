@@ -2,6 +2,8 @@ import SocketIo from "socket.io";
 import Runtime from "../../main";
 import { Plugin } from "omegga/dist/omegga/plugin";
 import omeggaPackage from "omegga/package.json";
+import child_process from "child_process";
+import util from "util";
 
 export default class WebOpenAPI {
     public static inject(socket: SocketIo.Socket) {
@@ -13,6 +15,9 @@ export default class WebOpenAPI {
         });
         socket.on("plugin:get", (searchItem, searchMethod) => {
             this.getPlugin(socket, searchItem, searchMethod);
+        });
+        socket.on("plugin:install", (author, name) => {
+            this.installPlugin(socket, author, name);
         });
         socket.on("omegga:info", () => {
             this.omeggaInfo(socket);
@@ -85,5 +90,25 @@ export default class WebOpenAPI {
         };
 
         socket.emit("omegga:info", info);
+    }
+
+    private static async installPlugin(socket: SocketIo.Socket, author: string, name: string) {
+        if (Runtime.omegga.pluginLoader.plugins.find((p) => p.shortPath === name)) {
+            socket.emit("plugin:install", false);
+            return;
+        }
+
+        const promise_child_process = util.promisify(child_process.exec);
+        let stdConsole = await promise_child_process(`omegga install gh:${author}/${name}`, { cwd: Runtime.omegga.path }).catch((err) => {
+            console.error(err);
+            socket.emit("plugin:install", false);
+            return;
+        });
+        if (stdConsole) {
+            console.log(stdConsole.stdout);
+            console.log(stdConsole.stderr);
+        }
+
+        socket.emit("plugin:install", true);
     }
 }
