@@ -17,6 +17,7 @@ export default class OmeggaWebServer extends EventEmitter {
     public io: SocketIo.Server;
 
     private readonly FRONTEND_PATH = path.join(Runtime.pluginPath, "webui/src/frontend");
+    private readonly DIST_PATH = path.join(this.FRONTEND_PATH, "dist");
 
     constructor(omegga: OmeggaLike) {
         super();
@@ -28,9 +29,9 @@ export default class OmeggaWebServer extends EventEmitter {
         //express setup
         this.app = express();
 
-        this.app.use("/public", express.static(this.FRONTEND_PATH));
+        this.app.use("/", express.static(this.DIST_PATH));
         this.app.use(async (req, res) => {
-            res.sendFile(path.join(this.FRONTEND_PATH, "main.html"));
+            res.sendFile(path.join(this.DIST_PATH, "index.html"));
         });
 
         //then, take the express app and create an http server with it.
@@ -50,8 +51,10 @@ export default class OmeggaWebServer extends EventEmitter {
     }
 
     public stop() {
-        this.server.close();
-        this.server.closeAllConnections();
-        this.emit("stopped");
+        if (this.server) {
+            this.server.close();
+            this.server.closeAllConnections();
+            this.emit("stopped");
+        }
     }
 }

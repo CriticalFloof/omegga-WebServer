@@ -1,29 +1,44 @@
 const path = require("path");
-const { VueLoaderPlugin } = require("vue-loader");
+
+let HtmlWebpackPlugin = require("html-webpack-plugin");
+let HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
+    template: "./webui/src/frontend/source/index.html",
+    filename: "index.html",
+    inject: "body",
+});
 
 module.exports = {
     mode: "development",
-    entry: "./webui/src/frontend/source/app.js",
+    entry: "./webui/src/frontend/source/app.tsx",
     output: {
         path: path.resolve(__dirname, "src/frontend/dist"),
         filename: "app.bundle.js",
     },
+    plugins: [HTMLWebpackPluginConfig],
     module: {
         rules: [
             {
-                test: /\.vue$/,
-                loader: "vue-loader",
-            },
-            {
-                test: /\.s?css$/,
-                use: ["vue-style-loader", "css-loader", "sass-loader"],
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: "style-loader",
+                    },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            modules: true,
+                            localsConvention: "camelCase",
+                            sourceMap: true,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 loader: "file-loader",
             },
             {
-                test: /\.[jt]s$/,
+                test: /\.[jt]sx?$/,
                 use: {
                     loader: "swc-loader",
                     options: {
@@ -33,6 +48,7 @@ module.exports = {
                             target: "es2020",
                             parser: {
                                 syntax: "typescript",
+                                tsx: true,
                             },
                             transform: {},
                         },
@@ -46,15 +62,14 @@ module.exports = {
             },
         ],
     },
-    plugins: [new VueLoaderPlugin()],
 
-    resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "src/frontend/source"),
-            "@css": path.resolve(__dirname, "src/frontend/source/css"),
-            "@components": path.resolve(__dirname, "src/frontend/source/components"),
-            "@pages": path.resolve(__dirname, "src/frontend/source/pages"),
-            "@assets": path.resolve(__dirname, "src/frontend/source/assets"),
-        },
-    },
+    //resolve: {
+    //    alias: {
+    //        "@": path.resolve(__dirname, "src/frontend/source"),
+    //        "@css": path.resolve(__dirname, "src/frontend/source/css"),
+    //        "@components": path.resolve(__dirname, "src/frontend/source/components"),
+    //        "@pages": path.resolve(__dirname, "src/frontend/source/pages"),
+    //        "@assets": path.resolve(__dirname, "src/frontend/source/assets"),
+    //    },
+    //},
 };

@@ -18,13 +18,14 @@ export default class Runtime {
         [this.omegga, this.config, this.store] = [omegga, config, store];
         this.pluginPath = path.dirname(path.join(__filename, ".."));
 
+        this.omeggaWebServer = new OmeggaWebServer(omegga);
+
         //For Automatically building the Frontend
         const promise_child_process = util.promisify(child_process.exec);
         await promise_child_process("npm run build-frontend", { cwd: this.pluginPath }).catch((err) => {
             console.error(err);
         });
-
-        this.omeggaWebServer = new OmeggaWebServer(omegga);
+        console.log("\x1b[36m%s\x1b[0m", "Webpack Bundling Successful!");
 
         this.omeggaWebServer.on("started", () => {
             console.log(`Omegga UI Listening on port ${this.omeggaWebServer.port}`);
