@@ -26,7 +26,6 @@ export default class OmeggaWebServer extends EventEmitter {
     }
 
     public start() {
-        //express setup
         this.app = express();
 
         this.app.use("/", express.static(this.DIST_PATH));
@@ -34,17 +33,21 @@ export default class OmeggaWebServer extends EventEmitter {
             res.sendFile(path.join(this.DIST_PATH, "index.html"));
         });
 
-        //then, take the express app and create an http server with it.
         this.server = http.createServer(this.app);
 
-        //socket io setup
         this.io = new SocketIo.Server(this.server);
         this.io.sockets.on("connection", (socket) => {
             console.log(`Connection Established with id: ${socket.id}`);
             WebOpenAPI.inject(socket);
         });
 
-        //Open the server
+        this.server.on("error", (e: { code: string; errno: number; syscall: string; address: string; port: number }) => {
+            if (e.code === "EADDRINUSE") {
+                console.error("\x1b[41m%s\x1b[0m", `Address ${this.port} is already in use!`);
+                this.stop();
+            }
+        });
+
         this.server.listen(this.port, () => {
             this.emit("started");
         });

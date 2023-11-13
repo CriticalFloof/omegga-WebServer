@@ -9,7 +9,7 @@ let HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 
 module.exports = {
     mode: "development",
-    entry: "./webui/src/frontend/source/app.tsx",
+    entry: "./webui/src/frontend/source/application.tsx",
     output: {
         path: path.resolve(__dirname, "src/frontend/dist"),
         filename: "app.bundle.js",
@@ -62,14 +62,4 @@ module.exports = {
             },
         ],
     },
-
-    //resolve: {
-    //    alias: {
-    //        "@": path.resolve(__dirname, "src/frontend/source"),
-    //        "@css": path.resolve(__dirname, "src/frontend/source/css"),
-    //        "@components": path.resolve(__dirname, "src/frontend/source/components"),
-    //        "@pages": path.resolve(__dirname, "src/frontend/source/pages"),
-    //        "@assets": path.resolve(__dirname, "src/frontend/source/assets"),
-    //    },
-    //},
 };

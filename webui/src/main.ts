@@ -22,20 +22,27 @@ export default class Runtime {
 
         //For Automatically building the Frontend
         const promise_child_process = util.promisify(child_process.exec);
-        await promise_child_process("npm run build-frontend", { cwd: this.pluginPath }).catch((err) => {
-            console.error(err);
-        });
-        console.log("\x1b[36m%s\x1b[0m", "Webpack Bundling Successful!");
+        await promise_child_process("npm run build-frontend", { cwd: this.pluginPath })
+            .then(() => {
+                console.log("\x1b[36m%s\x1b[0m", "Webpack Bundling Successful!");
 
-        this.omeggaWebServer.on("started", () => {
-            console.log(`Omegga UI Listening on port ${this.omeggaWebServer.port}`);
-        });
+                this.omeggaWebServer.on("started", () => {
+                    console.log(`Omegga UI Listening on port ${this.omeggaWebServer.port}`);
+                });
 
-        this.omeggaWebServer.on("stopped", () => {
-            console.log(`Omegga UI Shutting down on port ${this.omeggaWebServer.port}`);
-        });
+                this.omeggaWebServer.on("stopped", () => {
+                    console.log(`Omegga UI Shutting down on port ${this.omeggaWebServer.port}`);
+                });
 
-        this.omeggaWebServer.start();
+                this.omeggaWebServer.start();
+            })
+            .catch((err) => {
+                console.error(err);
+                console.log("\x1b[41m%s\x1b[0m", "Webpack Bundling Not Successful...");
+                console.log("Unloading Webserver Plugin.");
+                const plugin = this.omegga.pluginLoader.plugins.find((p) => p.path === this.pluginPath);
+                plugin!.unload();
+            });
 
         return { registeredCommands: [] };
     }
