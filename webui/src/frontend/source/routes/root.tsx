@@ -32,8 +32,8 @@ function UserDisplay() {
     );
 }
 
-function PageMain({ children }) {
-    return <main> {children} </main>;
+function PageMain(props: { children: any }) {
+    return <main> {props.children} </main>;
 }
 
 function PageNavigation() {
