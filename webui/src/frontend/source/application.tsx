@@ -4,12 +4,29 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Error404 } from "./pages/404.tsx";
 import { Root } from "./routes/root.tsx";
+import { DashboardPage } from "./routes/dashboard.tsx";
+import { HistoryPage } from "./routes/history.tsx";
+import { PluginsPage } from "./routes/plugins.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Root />,
         errorElement: <Error404 />,
+        children: [
+            {
+                path: "",
+                element: <DashboardPage />,
+            },
+            {
+                path: "plugins",
+                element: <PluginsPage />,
+            },
+            {
+                path: "history",
+                element: <HistoryPage />,
+            },
+        ],
     },
 ]);
 
