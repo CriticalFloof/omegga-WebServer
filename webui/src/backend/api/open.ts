@@ -11,7 +11,7 @@ export default class WebOpenAPI {
         socket.on("ping", () => {
             this.ping(socket);
         });
-        socket.on("pluginslist:get", () => {
+        socket.on("plugins:list", () => {
             this.getPluginsList(socket);
         });
         socket.on("plugin:get", (searchItem, searchMethod) => {
@@ -42,7 +42,7 @@ export default class WebOpenAPI {
 
         plugins.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
-        socket.emit("pluginslist:get", plugins);
+        socket.emit("plugins:list", plugins);
     }
 
     private static async getPlugin(socket: SocketIo.Socket, searchItem: string, searchMethod: "name" | "path" = "name") {

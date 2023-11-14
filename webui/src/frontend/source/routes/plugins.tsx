@@ -33,7 +33,7 @@ function PluginsList() {
 
     function getPluginList(): Promise<React.JSX.Element[]> {
         return new Promise((resolve) => {
-            socket.once("pluginslist:get", (pluginList: IPluginSummary[]) => {
+            socket.once("plugins:list", (pluginList: IPluginSummary[]) => {
                 console.log(pluginList);
 
                 resolve(
@@ -47,7 +47,7 @@ function PluginsList() {
                 );
             });
 
-            socket.emit("pluginslist:get");
+            socket.emit("plugins:list");
         });
     }
 
