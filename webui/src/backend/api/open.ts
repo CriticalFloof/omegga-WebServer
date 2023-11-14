@@ -4,6 +4,7 @@ import { Plugin } from "omegga/dist/omegga/plugin";
 import omeggaPackage from "omegga/package.json";
 import child_process from "child_process";
 import util from "util";
+import { IPluginSummary } from "../../web_server_types";
 
 export default class WebOpenAPI {
     public static inject(socket: SocketIo.Socket) {
@@ -31,7 +32,7 @@ export default class WebOpenAPI {
 
     private static getPluginsList(socket: SocketIo.Socket) {
         console.log("Getting Plugins...");
-        const plugins = Runtime.omegga.pluginLoader.plugins.map((v) => ({
+        const plugins: IPluginSummary[] = Runtime.omegga.pluginLoader.plugins.map((v) => ({
             name: v.getName(),
             documentation: v.getDocumentation(),
             path: v.shortPath,
