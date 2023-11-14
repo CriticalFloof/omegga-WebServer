@@ -2,11 +2,15 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import io from "socket.io-client";
+
 import { Error404 } from "./pages/404.tsx";
 import { Root } from "./pages/root.tsx";
 import { DashboardPage } from "./routes/dashboard.tsx";
 import { HistoryPage } from "./routes/history.tsx";
 import { PluginsPage } from "./routes/plugins.tsx";
+
+export const socket = io("http://localhost:8081");
 
 const router = createBrowserRouter([
     {
