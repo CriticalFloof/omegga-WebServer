@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Error404 } from "./pages/404.tsx";
-import { Root } from "./routes/root.tsx";
+import { Root } from "./pages/root.tsx";
 import { DashboardPage } from "./routes/dashboard.tsx";
 import { HistoryPage } from "./routes/history.tsx";
 import { PluginsPage } from "./routes/plugins.tsx";
