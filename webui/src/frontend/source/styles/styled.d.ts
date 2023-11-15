@@ -1,13 +1,14 @@
 import "styled-components";
 
 type hexColor = `#${string}`;
-type pxSize = `${string}px`;
 
 declare module "styled-components" {
     export interface DefaultTheme {
         colors: {
             //Thematic
             foreground: {
+                primary: hexColor;
+                primaryAlt: hexColor;
                 header: hexColor;
                 footer: hexColor;
             };
@@ -63,12 +64,14 @@ declare module "styled-components" {
             };
         };
         sizes: {
-            headerFont: pxSize;
-            footerFont: pxSize;
-            elementFont: pxSize;
-            headerHeight: pxSize;
-            footerHeight: pxSize;
-            elementHeight: pxSize;
+            px: {
+                headerFont: number;
+                footerFont: number;
+                elementFont: number;
+                headerHeight: number;
+                footerHeight: number;
+                elementHeight: number;
+            };
         };
     }
 }

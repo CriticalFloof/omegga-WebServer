@@ -1,5 +1,5 @@
 import { DefaultTheme } from "styled-components";
-import type { hexColor, pxSize } from "./styled.d.ts";
+import type { hexColor } from "./styled.d.ts";
 
 type ColorPalette = {
     thematic: hexColor[];
@@ -32,16 +32,18 @@ export const COLOR_PALETTE: ColorPalette = {
 };
 
 type SizePalette = {
-    px: pxSize[];
+    px: number[];
 };
 export const SIZE_PALETTE: SizePalette = {
-    px: ["24px", "32px", "48px"],
+    px: [24, 32, 48],
 };
 
-export const THEME: DefaultTheme = {
+export default {
     colors: {
         //Thematic
         foreground: {
+            primary: COLOR_PALETTE.thematic[0],
+            primaryAlt: COLOR_PALETTE.thematic[1],
             header: COLOR_PALETTE.thematic[0],
             footer: COLOR_PALETTE.thematic[0],
         },
@@ -97,11 +99,13 @@ export const THEME: DefaultTheme = {
         },
     },
     sizes: {
-        headerFont: SIZE_PALETTE.px[0],
-        footerFont: SIZE_PALETTE.px[0],
-        elementFont: SIZE_PALETTE.px[0],
-        headerHeight: SIZE_PALETTE.px[2],
-        footerHeight: SIZE_PALETTE.px[2],
-        elementHeight: SIZE_PALETTE.px[1],
+        px: {
+            headerFont: SIZE_PALETTE.px[0],
+            footerFont: SIZE_PALETTE.px[0],
+            elementFont: SIZE_PALETTE.px[0],
+            headerHeight: SIZE_PALETTE.px[2],
+            footerHeight: SIZE_PALETTE.px[2],
+            elementHeight: SIZE_PALETTE.px[1],
+        },
     },
-};
+} as DefaultTheme;
