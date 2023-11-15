@@ -29,7 +29,6 @@ const UserDisplay = () => {
     return (
         <div>
             <span>Welcome, Placeholder</span>
-            <Test></Test>
         </div>
     );
 };
