@@ -18,6 +18,7 @@ export default class OmeggaWebServer extends EventEmitter {
 
     private readonly FRONTEND_PATH = path.join(Runtime.pluginPath, "webui/src/frontend");
     private readonly DIST_PATH = path.join(this.FRONTEND_PATH, "dist");
+    private readonly ASSET_PATH = path.join(this.FRONTEND_PATH, "source/assets");
 
     constructor(omegga: OmeggaLike) {
         super();
@@ -28,9 +29,19 @@ export default class OmeggaWebServer extends EventEmitter {
     public start() {
         this.app = express();
 
-        this.app.use("/", express.static(this.DIST_PATH));
-        this.app.use(async (req, res) => {
-            res.sendFile(path.join(this.DIST_PATH, "index.html"));
+        this.app.use("/public", express.static(this.ASSET_PATH));
+        this.app.use("/public", async (req, res) => {
+            res.status(404).send("Not Found.");
+        });
+        this.app.use("/", async (req, res) => {
+            switch (req.path) {
+                case "/app.bundle.js":
+                    res.sendFile(path.join(this.DIST_PATH, "app.bundle.js"));
+                    break;
+                default:
+                    res.sendFile(path.join(this.DIST_PATH, "index.html"));
+                    break;
+            }
         });
 
         this.server = http.createServer(this.app);
