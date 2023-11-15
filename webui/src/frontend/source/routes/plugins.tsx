@@ -39,7 +39,7 @@ const PluginsList = () => {
                 resolve(
                     pluginList.map((p) => {
                         return (
-                            <div>
+                            <div key={p.path}>
                                 <span>{p.name}</span>
                             </div>
                         );
