@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { socket } from "../application.tsx";
 import { IPluginSummary } from "../../../web_server_types";
+import { socket } from "../application.tsx";
+
+import Button from "../components/interactable/button.tsx";
 
 /*
 PLUGINS
@@ -20,11 +22,6 @@ PLUGINS
 // TODO: PUT INTO COMPONENT FILE
 const OmeggaInput = (props: { placeholder?: string }) => {
     return <input placeholder={props.placeholder}></input>;
-};
-
-// TODO: PUT INTO COMPONENT FILE
-const OmeggaButton = ({ children = null, ...attributes }) => {
-    return <button {...attributes}>{children}</button>;
 };
 
 const PluginsList = () => {
@@ -62,12 +59,15 @@ const PluginsList = () => {
         <div>
             <div>
                 <OmeggaInput placeholder="Search Plugins..." />
-                <OmeggaButton
+                <Button
                     onClick={async () => {
                         updatePlugins(await getPluginList());
                     }}
-                ></OmeggaButton>
+                >
+                    <p>Refresh</p>
+                </Button>
             </div>
+            <span>Hello</span>
             <div>{plugins}</div>
         </div>
     );
