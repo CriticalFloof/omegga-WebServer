@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
+import styled from "styled-components";
 
 /*
 
@@ -15,28 +16,29 @@ import { Outlet, Link } from "react-router-dom";
         -Outlet !! This is where the router changes visuals !!
 */
 
-function PageHeader() {
+const PageHeader = () => {
     return (
         <header>
             <span>Page Title</span>
             <UserDisplay />
         </header>
     );
-}
+};
 
-function UserDisplay() {
+const UserDisplay = () => {
     return (
         <div>
             <span>Welcome, Placeholder</span>
+            <Test></Test>
         </div>
     );
-}
+};
 
-function PageMain(props: { children: any }) {
+const PageMain = (props: { children: any }) => {
     return <main> {props.children} </main>;
-}
+};
 
-function PageNavigation() {
+const PageNavigation = () => {
     return (
         <div>
             <Link to="/">
@@ -50,9 +52,9 @@ function PageNavigation() {
             </Link>
         </div>
     );
-}
+};
 
-export function Root() {
+export const Root = () => {
     return (
         <div>
             <PageHeader />
@@ -62,4 +64,4 @@ export function Root() {
             </PageMain>
         </div>
     );
-}
+};

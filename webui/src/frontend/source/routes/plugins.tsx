@@ -18,16 +18,16 @@ PLUGINS
 */
 
 // TODO: PUT INTO COMPONENT FILE
-function OmeggaInput(props: { placeholder?: string }) {
+const OmeggaInput = (props: { placeholder?: string }) => {
     return <input placeholder={props.placeholder}></input>;
-}
+};
 
 // TODO: PUT INTO COMPONENT FILE
-function OmeggaButton({ children = null, ...attributes }) {
+const OmeggaButton = ({ children = null, ...attributes }) => {
     return <button {...attributes}>{children}</button>;
-}
+};
 
-function PluginsList() {
+const PluginsList = () => {
     let [isLoaded, updateLoadStatus] = useState<boolean>(false);
     let [plugins, updatePlugins] = useState<React.JSX.Element[]>([]);
 
@@ -71,12 +71,12 @@ function PluginsList() {
             <div>{plugins}</div>
         </div>
     );
-}
+};
 
-export function PluginsPage() {
+export const PluginsPage = () => {
     return (
         <div>
             <PluginsList />
         </div>
     );
-}
+};

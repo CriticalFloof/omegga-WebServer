@@ -37,13 +37,13 @@ const router = createBrowserRouter([
     },
 ]);
 
-function App() {
+const App = () => {
     return (
         <div>
             <RouterProvider router={router} />
         </div>
     );
-}
+};
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
