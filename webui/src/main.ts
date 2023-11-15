@@ -1,11 +1,11 @@
 import path from "path";
-import { Config, Storage } from "../plugin_entry";
 import OmeggaWebServer from "./backend/web_server";
 
 import child_process from "child_process";
 import util from "util";
 import { PluginConfig, PluginStore } from "omegga/dist/plugin";
 import Omegga from "omegga/dist/omegga/server";
+import { Config, Storage } from "../plugin_entry";
 
 export default class Runtime {
     public static pluginPath: string;
@@ -22,7 +22,9 @@ export default class Runtime {
 
         //For Automatically building the Frontend
         const promise_child_process = util.promisify(child_process.exec);
-        await promise_child_process("npm run build-frontend", { cwd: this.pluginPath })
+        await promise_child_process(this.config["Build in production mode"] ? "npm run build-frontend" : "npm run build-frontend-dev", {
+            cwd: this.pluginPath,
+        })
             .then(() => {
                 console.log("\x1b[36m%s\x1b[0m", "Webpack Bundling Successful!");
 

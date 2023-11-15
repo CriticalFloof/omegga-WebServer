@@ -2,8 +2,8 @@ import { OmeggaPlugin, PluginConfig, PluginStore } from "omegga/dist/plugin";
 import Omegga from "omegga/dist/omegga/server";
 import Runtime from "./src/main";
 
-export type Config = { foo: string };
-export type Storage = { bar: string };
+export type Config = { "Build in production mode": boolean };
+export type Storage = {};
 
 export default class Plugin implements OmeggaPlugin<Config, Storage> {
     public omegga: Omegga;

@@ -20,7 +20,8 @@
         "webpack-cli": "^5.1.4"
     },
     "scripts": {
-        "build-frontend": "webpack --config webui/webpack.config.js"
+        "build-frontend": "webpack --mode production --config webui/webpack.config.js",
+        "build-frontend-dev": "webpack --mode development --config webui/webpack.config.js"
     },
     "devDependencies": {
         "@types/express": "^4.17.21",

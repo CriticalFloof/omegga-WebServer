@@ -2,6 +2,12 @@
     "name": "Web Server",
     "description": "Creates a Web Server packaged with a Web UI to allow easy management and tooling for Omegga",
     "author": "Critical Floof",
-    "config": {},
+    "config": {
+        "Build in production mode": {
+            "description": "This tells the webpack bundler to create the frontend in production mode",
+            "default": true,
+            "type": "boolean"
+        }
+    },
     "commands": []
 }

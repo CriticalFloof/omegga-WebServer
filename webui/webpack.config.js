@@ -8,7 +8,6 @@ let HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 });
 
 module.exports = {
-    mode: "development",
     entry: "./webui/src/frontend/source/application.tsx",
     output: {
         path: path.resolve(__dirname, "src/frontend/dist"),
