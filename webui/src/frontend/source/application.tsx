@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
@@ -11,7 +11,8 @@ import { DashboardPage } from "./routes/dashboard.tsx";
 import { HistoryPage } from "./routes/history.tsx";
 import { PluginsPage } from "./routes/plugins.tsx";
 
-import { THEME } from "./styles/theme.styles.tsx";
+import Theme from "./styles/theme.styles.tsx";
+import GlobalStyle from "./styles/global.styles.tsx";
 
 export const socket = io("http://localhost:8081");
 
@@ -47,11 +48,14 @@ const App = () => {
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
-    <React.StrictMode>
-        <ThemeProvider theme={THEME}>
-            <App />
-        </ThemeProvider>
-    </React.StrictMode>
+    <Fragment>
+        <GlobalStyle />
+        <React.StrictMode>
+            <ThemeProvider theme={Theme}>
+                <App />
+            </ThemeProvider>
+        </React.StrictMode>
+    </Fragment>
 );
 
 /*
