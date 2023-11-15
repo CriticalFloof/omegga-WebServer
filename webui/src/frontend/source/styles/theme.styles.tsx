@@ -1,4 +1,13 @@
-export const COLOR_PALETTE = {
+import { DefaultTheme } from "styled-components";
+import type { hexColor, pxSize } from "./styled.d.ts";
+
+type ColorPalette = {
+    thematic: hexColor[];
+    colored: {
+        [index: string]: hexColor[];
+    };
+};
+export const COLOR_PALETTE: ColorPalette = {
     thematic: [
         "#ffffff",
         "#a7bbce",
@@ -22,11 +31,14 @@ export const COLOR_PALETTE = {
     },
 };
 
-export const SIZE_PALETTE = {
+type SizePalette = {
+    px: pxSize[];
+};
+export const SIZE_PALETTE: SizePalette = {
     px: ["24px", "32px", "48px"],
 };
 
-export const THEME = {
+export const THEME: DefaultTheme = {
     colors: {
         //Thematic
         foreground: {
