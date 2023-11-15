@@ -1,10 +1,11 @@
 const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-let HtmlWebpackPlugin = require("html-webpack-plugin");
 let HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
     template: "./webui/src/frontend/source/index.html",
     filename: "index.html",
     inject: "body",
+    favicon: "./webui/src/frontend/source/assets/icons/omegga.ico",
 });
 
 module.exports = {
